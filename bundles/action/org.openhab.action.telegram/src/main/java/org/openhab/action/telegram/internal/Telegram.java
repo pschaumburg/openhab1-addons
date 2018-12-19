@@ -74,6 +74,10 @@ public class Telegram {
         groupTokens.put(group, new TelegramBot(chatId, token));
     }
 
+    public static void addTokenMode(String group, String chatId, String token, String parse) {
+        groupTokens.put(group, new TelegramBotMode(chatId, token, parse));
+    }
+
     @ActionDoc(text = "Sends a Telegram via Telegram REST API - direct message")
     static public boolean sendTelegram(@ParamDoc(name = "group") String group,
             @ParamDoc(name = "message") String message) {
@@ -93,7 +97,7 @@ public class Telegram {
         postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
                 new DefaultHttpMethodRetryHandler(HTTP_RETRIES, false));
         NameValuePair[] data = { new NameValuePair("chat_id", groupTokens.get(group).getChatId()),
-                new NameValuePair("text", message) };
+                new NameValuePair("text", message), new NameValuePair("parse_mode", groupTokens.get(group).getParse()) };
         postMethod.setRequestBody(data);
 
         try {
